@@ -19,12 +19,11 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # client = gspread.authorize(creds)
 # sheet = client.open("Widget_Data").sheet1  
 
-creds_json = os.getenv("GOOGLE_SHEET_CREDENTIALS")
+with open("/etc/secrets/GOOGLE_SHEET_CREDENTIALS") as f:
+    creds_dict = json.load(f)
 
-creds_dict = json.loads(creds_json)
-
+# Use credentials to authorize gspread
 creds = Credentials.from_service_account_info(creds_dict)
-
 client = gspread.authorize(creds)
 sheet = client.open("Widget_Data").sheet1
 
