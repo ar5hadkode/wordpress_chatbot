@@ -5,17 +5,29 @@ from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 import openai
 import os
+import json
 import gspread
+from google.oauth2.service_account import Credentials
 from oauth2client.service_account import ServiceAccountCredentials
 from dotenv import load_dotenv
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("chatbot-widget-457706-cb87129e8db6.json", scope)
+# scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+# creds = ServiceAccountCredentials.from_json_keyfile_name("chatbot-widget-457706-cb87129e8db6.json", scope)
+# client = gspread.authorize(creds)
+# sheet = client.open("Widget_Data").sheet1  
+
+creds_json = os.getenv("GOOGLE_SHEET_CREDENTIALS")
+
+creds_dict = json.loads(creds_json)
+
+creds = Credentials.from_service_account_info(creds_dict)
+
 client = gspread.authorize(creds)
-sheet = client.open("Widget_Data").sheet1  
+sheet = client.open("Widget_Data").sheet1
+
 
 app = FastAPI()
 
